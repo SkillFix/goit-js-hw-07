@@ -1,6 +1,40 @@
 import { galleryItems } from './gallery-items.js';
-// Change code below this line
 
+const galleryContainerEl = document.querySelector('.gallery');
+const galleryMarkup = createGalleryMarkup(galleryItems);
+
+galleryContainerEl.insertAdjacentHTML('beforeend', galleryMarkup);
+
+function createGalleryMarkup(galleryItems) {
+  return galleryItems
+    .map(({ preview, original, description }) => {
+      return `<div class="gallery__item">
+    <a class="gallery__link" href="${original}">
+      <img
+        class="gallery__image"
+        src="${preview}"
+        data-source="${original}"
+        alt="${description}"
+      />
+    </a>
+  </div>`;
+    })
+    .join('');
+}
+
+galleryContainerEl.addEventListener('click', openModal);
+
+function openModal(event) {
+  event.preventDefault();
+  if (event.target.tagName != 'IMG') {
+    return;
+  }
+  const dataSource = event.target.dataset.source;
+  const instance = basicLightbox.create(`<img src="${dataSource}">`);
+  instance.show();
+}
+
+// bad version
 // const gallery = document.querySelector('.gallery');
 // const items = [];
 
@@ -42,42 +76,3 @@ import { galleryItems } from './gallery-items.js';
 //     }
 //   });
 // });
-
-//  Код адекватного человека
-const galleryContainerEl = document.querySelector('.gallery');
-const galleryMarkup = createGalleryMarkup(galleryItems);
-
-galleryContainerEl.insertAdjacentHTML('beforeend', galleryMarkup);
-
-function createGalleryMarkup(galleryItems) {
-  return galleryItems
-    .map(({ preview, original, description }) => {
-      return `
-    <div class="gallery__item">
-  <a class="gallery__link" href="${original}">
-    <img
-      class="gallery__image"
-      src="${preview}"
-      data-source="${original}"
-      alt="${description}"
-    />
-  </a>
-</div>
-    `;
-    })
-    .join('');
-}
-
-galleryContainerEl.addEventListener('click', openModal);
-
-function openModal(event) {
-  event.preventDefault();
-
-  if (event.target.tagName !== 'IMG') {
-    return;
-  }
-
-  const dataSource = event.target.dataset.source;
-  const instance = basicLightbox.create(`<img src="${dataSource}">`);
-  instance.show();
-}
